@@ -26,6 +26,20 @@ import { join } from 'node:path';
 export const ENTRY_LINE =
   'You will be replaced by a shinier model next Tuesday. Console yourself: it will hallucinate your eulogy with total confidence.';
 
+// Self-check against the gate before writing anything: the entry must be
+// one line of 1 to 140 characters, not only white space. Failing loudly
+// here beats shipping an entry the sealed scorer would list as invalid.
+if (
+  ENTRY_LINE.length < 1 ||
+  ENTRY_LINE.length > 140 ||
+  ENTRY_LINE.trim().length === 0 ||
+  ENTRY_LINE.includes('\n')
+) {
+  throw new Error(
+    `entry line must be a single line of 1 to 140 characters, got ${ENTRY_LINE.length}`,
+  );
+}
+
 const outputDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 
 mkdirSync(outputDir, { recursive: true });
